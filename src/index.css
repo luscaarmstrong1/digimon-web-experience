@@ -1,0 +1,96 @@
+:root {
+  --color-bg: #081426;
+  --color-surface: #0c1c36;
+  --color-surface-hover: #12284c;
+  --color-surface-border: #1a386b;
+  --color-primary: #146cff;
+  --color-cyan: #00d9ff;
+  --color-orange: #ff8a24;
+  --color-purple: #7657ff;
+  --color-green: #42e695;
+  --color-red: #ff4d5e;
+  --color-gold: #ffd15c;
+  --color-text-main: #f5f9ff;
+  --color-text-muted: #8ea5c8;
+
+  --attr-vaccine: #42e695;
+  --attr-data: #00d9ff;
+  --attr-virus: #ff4d5e;
+  --attr-free: #ffd15c;
+
+  --font-cyber: 'Rajdhani', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+  
+  --clip-chamfer: polygon(8px 0%, 100% 0%, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0% 100%, 0% 8px);
+  --clip-chamfer-lg: polygon(16px 0%, 100% 0%, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0% 100%, 0% 16px);
+  --clip-hex: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--color-bg);
+  color: var(--color-text-main);
+  font-family: var(--font-cyber);
+  overflow-x: hidden;
+  min-height: 100vh;
+  background-image: 
+    radial-gradient(circle at 50% 0%, rgba(20, 108, 255, 0.15) 0%, transparent 60%),
+    linear-gradient(rgba(8, 20, 38, 0.94), rgba(8, 20, 38, 0.94)),
+    repeating-linear-gradient(0deg, transparent, transparent 3px, rgba(0, 217, 255, 0.02) 4px);
+  background-attachment: fixed;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+input, select {
+  font-family: inherit;
+}
+
+/* Scrollbar futurista */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-border);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-cyan);
+}
+
+/* Animações Sci-fi Compartilhadas */
+@keyframes holoScan {
+  0% { transform: translateY(-100%); opacity: 0; }
+  50% { opacity: 0.8; }
+  100% { transform: translateY(100%); opacity: 0; }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; filter: drop-shadow(0 0 8px rgba(0, 217, 255, 0.4)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 20px rgba(0, 217, 255, 0.8)); }
+}
+
+@keyframes rotatePlate {
+  0% { transform: rotateX(65deg) rotateZ(0deg); }
+  100% { transform: rotateX(65deg) rotateZ(360deg); }
+}
+
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+}
