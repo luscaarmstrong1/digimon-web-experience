@@ -12,6 +12,7 @@ export const DigiCards: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<DigimonCard | null>(tcgList[0] || null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
+  const [displayLimit, setDisplayLimit] = useState(120);
 
   const cardRef = useRef<HTMLDivElement | null>(null);
 
@@ -20,6 +21,8 @@ export const DigiCards: React.FC = () => {
     const matchColor = selectedColor === 'ALL' || c.color === selectedColor;
     return matchSearch && matchColor;
   });
+
+  const displayedCards = filteredCards.slice(0, displayLimit);
 
   // Geração e Download da Carta em Alta Resolução (Canvas 2D renderizado a 1200x1680px)
   const downloadHighResCard = async (card: DigimonCard) => {
@@ -427,6 +430,15 @@ export const DigiCards: React.FC = () => {
             <option value="Green">Green</option>
             <option value="Purple">Purple</option>
           </select>
+
+          {/* Contador de Cartas Totais */}
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '0.82rem',
+            color: 'var(--color-text-muted)'
+          }}>
+            <span style={{ color: 'var(--color-cyan)', fontWeight: 800 }}>{filteredCards.length}</span> / {tcgList.length} CARTAS
+          </div>
         </div>
       </div>
 
@@ -597,51 +609,97 @@ export const DigiCards: React.FC = () => {
         )}
 
         {/* Galeria de Miniaturas */}
-        <div style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
-          gap: '1rem'
-        }}>
-          {filteredCards.map(c => (
-            <div
-              key={c.cardnumber}
-              onClick={() => {
-                soundFx.playScan();
-                setSelectedCard(c);
-              }}
-              style={{
-                background: 'var(--color-surface)',
-                border: selectedCard?.cardnumber === c.cardnumber ? '2px solid var(--color-cyan)' : '1px solid var(--color-surface-border)',
-                clipPath: 'var(--clip-chamfer)',
-                padding: '0.75rem',
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.5rem',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <div style={{
-                background: 'var(--color-bg)',
-                height: '120px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                borderRadius: '6px'
-              }}>
-                <img src={c.image_url} alt={c.name} style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
-              </div>
-              <div>
-                <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                  {c.name}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(180px, 1fr))',
+            gap: '1rem'
+          }}>
+            {displayedCards.map(c => (
+              <div
+                key={c.cardnumber}
+                onClick={() => {
+                  soundFx.playScan();
+                  setSelectedCard(c);
+                }}
+                style={{
+                  background: 'var(--color-surface)',
+                  border: selectedCard?.cardnumber === c.cardnumber ? '2px solid var(--color-cyan)' : '1px solid var(--color-surface-border)',
+                  clipPath: 'var(--clip-chamfer)',
+                  padding: '0.75rem',
+                  cursor: 'pointer',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '0.5rem',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div style={{
+                  background: 'var(--color-bg)',
+                  height: '120px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  borderRadius: '6px'
+                }}>
+                  <img src={c.image_url} alt={c.name} loading="lazy" style={{ width: '90px', height: '90px', objectFit: 'contain' }} />
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '0.2rem' }}>
-                  <span>{c.cardnumber}</span>
-                  <span style={{ color: 'var(--color-cyan)' }}>{c.color}</span>
+                <div>
+                  <div style={{ fontWeight: 800, fontSize: '0.9rem', color: '#fff', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                    {c.name}
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.72rem', color: 'var(--color-text-muted)', marginTop: '0.2rem' }}>
+                    <span>{c.cardnumber}</span>
+                    <span style={{ color: 'var(--color-cyan)' }}>{c.color}</span>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {/* Botões de Carregar Mais Cartas */}
+          {displayLimit < filteredCards.length && (
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginTop: '0.5rem' }}>
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setDisplayLimit(prev => Math.min(filteredCards.length, prev + 120));
+                }}
+                style={{
+                  background: 'var(--color-surface)',
+                  border: '1px solid var(--color-cyan)',
+                  color: 'var(--color-cyan)',
+                  padding: '0.8rem 1.8rem',
+                  clipPath: 'var(--clip-chamfer)',
+                  fontWeight: 800,
+                  fontSize: '0.95rem',
+                  letterSpacing: '1px',
+                  boxShadow: '0 0 15px rgba(0, 217, 255, 0.2)'
+                }}
+              >
+                CARREGAR MAIS CARTAS (+120)
+              </button>
+
+              <button
+                onClick={() => {
+                  soundFx.playClick();
+                  setDisplayLimit(filteredCards.length);
+                }}
+                style={{
+                  background: 'linear-gradient(90deg, var(--color-primary), var(--color-cyan))',
+                  color: '#081426',
+                  padding: '0.8rem 1.8rem',
+                  clipPath: 'var(--clip-chamfer)',
+                  fontWeight: 900,
+                  fontSize: '0.95rem',
+                  letterSpacing: '1px',
+                  boxShadow: '0 0 20px rgba(0, 217, 255, 0.4)'
+                }}
+              >
+                CARREGAR TODAS AS {filteredCards.length} CARTAS
+              </button>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>
